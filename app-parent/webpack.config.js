@@ -33,7 +33,20 @@ module.exports = {
     new ModuleFederationPlugin({
       name: 'parent',
       remotes: {
-        child: 'child@http://localhost:8400/remote-service.js',
+        child: {
+          external: `promise new Promise(resolve => {
+            const scriptElement = document.createElement('script');
+
+            scriptElement.onload = () => {
+              scriptElement.remove();
+              resolve(window['child:remoteEntry']);
+            };
+            scriptElement.src = __RemoteModuleEntries__.child;
+            scriptElement.async = true;
+
+            document.head.append(scriptElement);
+          })`,
+        },
       },
     }),
     new HtmlWebpackPlugin({

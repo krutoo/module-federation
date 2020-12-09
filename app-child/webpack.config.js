@@ -4,6 +4,7 @@ const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlug
 module.exports = {
   entry: './src/index.jsx',
   output: {
+    library: 'Child',
     publicPath: 'auto',
   },
   devtool: 'inline-source-map',
@@ -30,7 +31,8 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'child',
-      filename: 'remote-service.js',
+      library: { type: 'global', name: 'child:remoteEntry' },
+      filename: 'remote-entry.js',
       exposes: {
         './App': './src/index',
       },

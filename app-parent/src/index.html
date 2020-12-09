@@ -9,5 +9,11 @@
   <div id="root"></div>
   <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+  <script>
+    // актуальные ссылки на точки входа удаленных сборок, прямо в runtime
+    window.__RemoteModuleEntries__ = {
+      child: 'http://localhost:8400/remote-entry.js',
+    };
+  </script>
 </body>
 </html>
