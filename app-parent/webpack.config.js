@@ -1,40 +1,37 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ModuleFederationPlugin = require("webpack").container.ModuleFederationPlugin;
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ModuleFederationPlugin =
+  require("webpack").container.ModuleFederationPlugin;
+const { dependencies } = require("./package.json");
 
 module.exports = {
-  entry: './src/index.jsx',
+  entry: "./src/index.jsx",
   output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
+    filename: "index.js",
+    path: path.resolve(__dirname, "dist"),
   },
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/preset-modules',
-              "@babel/preset-react",
-            ],
-          },
-        }
+          loader: "swc-loader",
+        },
       },
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: [".js", ".jsx"],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'parent',
+      name: "parent",
       remotes: {
         child: {
           external: `promise new Promise(resolve => {
+            console.log('promise callback started!');
             const scriptElement = document.createElement('script');
 
             scriptElement.onload = () => {
@@ -48,17 +45,24 @@ module.exports = {
           })`,
         },
       },
+      shared: {
+        ...dependencies,
+        react: {
+          requiredVersion: dependencies.react,
+          singleton: true,
+        },
+        "react-dom": {
+          requiredVersion: dependencies["react-dom"],
+          singleton: true,
+        },
+      },
     }),
     new HtmlWebpackPlugin({
-      template: 'src/index.html',
+      template: "src/index.html",
     }),
   ],
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, "dist"),
     compress: true,
     port: 8500,
   },

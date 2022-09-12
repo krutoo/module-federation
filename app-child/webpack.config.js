@@ -1,45 +1,47 @@
-const path = require('path');
-const ModuleFederationPlugin = require('webpack').container.ModuleFederationPlugin;
+const ModuleFederationPlugin =
+  require("webpack").container.ModuleFederationPlugin;
+const { dependencies } = require("./package.json");
 
 module.exports = {
-  entry: './src/index.jsx',
+  entry: "./src/index.jsx",
   output: {
-    library: 'Child',
-    publicPath: 'auto',
+    library: "Child",
+    publicPath: "auto",
   },
-  devtool: 'inline-source-map',
+  devtool: "inline-source-map",
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              '@babel/preset-modules',
-              '@babel/preset-react',
-            ],
-          },
-        }
+          loader: "swc-loader",
+        },
       },
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: [".js", ".jsx"],
   },
   plugins: [
     new ModuleFederationPlugin({
-      name: 'child',
-      library: { type: 'global', name: 'child:remoteEntry' },
-      filename: 'remote-entry.js',
+      name: "child",
+      library: { type: "global", name: "child:remoteEntry" },
+      filename: "remote-entry.js",
       exposes: {
-        './App': './src/index',
+        "./App": "./src/index",
+      },
+      shared: {
+        ...dependencies,
+        react: {
+          requiredVersion: dependencies.react,
+          singleton: true,
+        },
+        "react-dom": {
+          requiredVersion: dependencies["react-dom"],
+          singleton: true,
+        },
       },
     }),
   ],
-  externals: {
-    react: 'React',
-    'react-dom': 'ReactDOM',
-  },
 };
