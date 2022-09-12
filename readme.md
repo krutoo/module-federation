@@ -1,15 +1,17 @@
-# Пример Module Federation
+# Module Federation Example
 
-## Запуск
+Example of storing module remote entry url in page (not in bundle)
 
-1. В терминале выполнить:
+## Run
+
+1. In terminal:
 
 ```bash
-# в каталоге app-child
+# in app-child directory
 npm i && npm run build && npm run serve
 
-# в каталоге app-parent
+# in app-parent directory
 npm i && npm run dev
 ```
 
-2. В браузере открыть http://localhost:8500
+2. In browser open http://localhost:8500

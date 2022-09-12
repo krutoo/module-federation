@@ -38,6 +38,7 @@ module.exports = {
               scriptElement.remove();
               resolve(window['child:remoteEntry']);
             };
+
             scriptElement.src = __RemoteModuleEntries__.child;
             scriptElement.async = true;
 
