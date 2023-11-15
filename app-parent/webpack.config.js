@@ -25,25 +25,15 @@ module.exports = {
   resolve: {
     extensions: [".js", ".jsx"],
   },
+  experiments: {
+    outputModule: true,
+  },
   plugins: [
     new ModuleFederationPlugin({
       name: "parent",
       remotes: {
         child: {
-          external: `promise new Promise(resolve => {
-            console.log('promise callback started!');
-            const scriptElement = document.createElement('script');
-
-            scriptElement.onload = () => {
-              scriptElement.remove();
-              resolve(window['child:remoteEntry']);
-            };
-
-            scriptElement.src = __RemoteModuleEntries__.child;
-            scriptElement.async = true;
-
-            document.head.append(scriptElement);
-          })`,
+          external: 'import remotes/child/remote-entry.js'
         },
       },
       shared: {
@@ -60,6 +50,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
+      scriptLoading: 'module'
     }),
   ],
   devServer: {

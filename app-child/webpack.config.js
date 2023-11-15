@@ -5,7 +5,6 @@ const { dependencies } = require("./package.json");
 module.exports = {
   entry: "./src/index.jsx",
   output: {
-    library: "Child",
     publicPath: "auto",
   },
   devtool: "inline-source-map",
@@ -23,10 +22,13 @@ module.exports = {
   resolve: {
     extensions: [".js", ".jsx"],
   },
+  experiments: {
+    outputModule: true,
+  },
   plugins: [
     new ModuleFederationPlugin({
       name: "child",
-      library: { type: "global", name: "child:remoteEntry" },
+      library: { type: "module" },
       filename: "remote-entry.js",
       exposes: {
         "./App": "./src/index",
