@@ -1,18 +1,20 @@
-const ModuleFederationPlugin =
-  require("webpack").container.ModuleFederationPlugin;
-const { dependencies } = require("./package.json");
+import ModuleFederation from "@module-federation/enhanced";
 
-module.exports = {
-  entry: "./src/index.jsx",
+const { ModuleFederationPlugin } = ModuleFederation;
+
+export default {
+  entry: "./src/index.tsx",
   output: {
-    library: "Child",
     publicPath: "auto",
   },
   devtool: "inline-source-map",
+  resolve: {
+    extensions: [".ts", ".tsx"],
+  },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
         use: {
           loader: "swc-loader",
@@ -20,28 +22,24 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    extensions: [".js", ".jsx"],
-  },
   plugins: [
     new ModuleFederationPlugin({
       name: "child",
-      library: { type: "global", name: "child:remoteEntry" },
       filename: "remote-entry.js",
       exposes: {
         "./App": "./src/index",
       },
       shared: {
-        ...dependencies,
         react: {
-          requiredVersion: dependencies.react,
           singleton: true,
         },
         "react-dom": {
-          requiredVersion: dependencies["react-dom"],
           singleton: true,
         },
       },
     }),
   ],
+  devServer: {
+    port: 8400,
+  },
 };
