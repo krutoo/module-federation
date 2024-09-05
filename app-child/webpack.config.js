@@ -9,7 +9,7 @@ export default {
   },
   devtool: "inline-source-map",
   resolve: {
-    extensions: [".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   module: {
     rules: [
